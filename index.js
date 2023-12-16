@@ -155,7 +155,7 @@ function plotGraph(arraySize, arrayTime, grau, pivot){
         debug: true,
         type: 'line',
         title_label_text: 'Graph Pivo '+ pivot + ' e Grau ' + grau,
-        legend_position: 'inside bottom right',
+        legend_position: 'outside bottom right',
         xAxis: { scale_type: '' },
         series: [
           {
