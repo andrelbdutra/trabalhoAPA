@@ -1,3 +1,5 @@
+import * as JSC from 'jscharting';
+
 const fs = require('fs');
 
 // Função para criar um array de números de 1 a n embaralhados
