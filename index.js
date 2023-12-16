@@ -148,8 +148,31 @@ function calculaMedia(array) {
   return media;
 }
 
+function plotGraph(arraySize, arrayTime, grau, pivot){
+    var chart = JSC.chart('chartDiv', {
+        debug: true,
+        type: 'line',
+        title_label_text: 'Graph Pivo '+ pivot + ' e Grau ' + grau,
+        legend_position: 'inside bottom right',
+        xAxis: { scale_type: '' },
+        series: [
+          {
+            name: '',
+            points: [
+              [arraySize[0], arrayTime[0]],
+              [arraySize[1], arrayTime[1]],
+              [arraySize[2], arrayTime[2]],
+              [arraySize[3], arrayTime[3]],
+              [arraySize[4], arrayTime[4]],
+              [arraySize[5], arrayTime[5]]
+            ]
+          }
+        ]
+      });
+}
+
 function main() {
-  var tamanhoArray = 100000; // Tamanho do array desejado
+  var tamanhoArray = 100; // Tamanho do array desejado
   const grauDesordenamento = 'muito'; // 'pouco', 'medio', 'muito'
 
   let arrayEmbaralhado;
@@ -160,25 +183,42 @@ function main() {
   let tipoPivo;
   let times = [];
   let N = 10;
+  
+  let timePerArray = [];
+  let sizePerArray = [];
+  
   // executa quickSort N vezes e salva média
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  for (let i = 0; i < N; i++) {
-    arrayEmbaralhado = criarArrayEmbaralhado(tamanhoArray, grauDesordenamento);       
-    tipoPivo = 'mediana' // 'primeira', 'cental', 'media', 'aleatorio', 'mediana', 'achaPivo'
-    inicio = performance.now(); // inicio timer
-    arrayOrdenado = quicksort([...arrayEmbaralhado], 0, (arrayEmbaralhado.length - 1), tipoPivo); // quicksort(array, inicio, fim, tipoPivo)
-    fim = performance.now(); // fim timer
-    tempoExecucao = fim - inicio;
-    times[i] = tempoExecucao;
+  for (let j = 0; j < 2; j++){
+      for (let i = 0; i < N; i++) {
+        arrayEmbaralhado = criarArrayEmbaralhado(tamanhoArray, grauDesordenamento);       
+        tipoPivo = 'mediana' // 'primeira', 'cental', 'media', 'aleatorio', 'mediana', 'achaPivo'
+        inicio = performance.now(); // inicio timer
+        arrayOrdenado = quicksort([...arrayEmbaralhado], 0, (arrayEmbaralhado.length - 1), tipoPivo); // quicksort(array, inicio, fim, tipoPivo)
+        fim = performance.now(); // fim timer
+        tempoExecucao = fim - inicio;
+        times[i] = tempoExecucao;
+      }
+      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      let mediaTempoMilisegundos = calculaMedia(times);
+      let mediaTempoSegundos = calculaMedia(times)/1000;
+      console.log("\nMédia de tempo de " + N + " execuções quickSort com "+ tamanhoArray + " elementos com " +
+       grauDesordenamento + " desordenamento " + "e pivo " + tipoPivo + ": " +
+       "\n", mediaTempoSegundos.toFixed(5) + " segundos");  console.log(mediaTempoMilisegundos.toFixed(5) + " milisegundos");
+      //salvarArrayEmArquivo('array_embaralhado.json', arrayEmbaralhado);
+      //salvarArrayEmArquivo('array_ordenado.json', arrayOrdenado);
+      
+      //Salva em um array o tempo médio e o tempo de execução
+      timePerArray[j] = mediaTempoMilisegundos;
+      sizePerArray[j] = tamanhoArray;
+      tamanhoArray = tamanhoArray*10;
   }
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  let mediaTempoMilisegundos = calculaMedia(times);
-  let mediaTempoSegundos = calculaMedia(times)/1000;
-  console.log("\nMédia de tempo de " + qntRepeticoes + " execuções quickSort com "+ tamanhoArray + " elementos com " +
-   grauDesordenamento + " desordenamento " + "e pivo " + tipoPivo + ": " +
-   "\n", mediaTempoSegundos.toFixed(5) + " segundos");  console.log(mediaTempoMilisegundos.toFixed(5) + " milisegundos");
-  salvarArrayEmArquivo('array_embaralhado.json', arrayEmbaralhado);
-  salvarArrayEmArquivo('array_ordenado.json', arrayOrdenado);
+  console.log("Resultado do QuickSort pelo método " + tipoPivo + " e grau de desordenamento: "
+  + grauDesordenamento + "\n");
+  for (var i = 0; i < timePerArray.length; i++) {
+    console.log("Size " + sizePerArray[i] + ": " + timePerArray[i] + "\n");
+  }
+  plotGraph(sizePerArray,timePerArray,grauDesordenamento,tipoPivo);
 }
 
 main();
