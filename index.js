@@ -9,7 +9,7 @@ function getRandomInt(max)
 
 function getRandomArbitrary(min, max) 
 {
-    return Math.random() * (max - min + 1) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function averageArray(arr)
@@ -51,20 +51,20 @@ function randPartition(arr,l,h)
 {
     let rand = getRandomArbitrary(l, h);
     [arr[rand],arr[h]] = [arr[h],arr[rand]];
-    let pivot = arr[rand];
-    let i = l;
-    for (let j = l; j < h; j++) 
+    let pivot = arr[h];
+    let i = l - 1;
+   
+    for (let j = l; j <= h - 1; j++) 
     {
         if (arr[j] < pivot) 
         {
-            [arr[i],arr[j]] = [arr[j],arr[i]];
             i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
     }
-
-    [arr[i],arr[h]] = [arr[h],arr[i]];
-
-    return i;
+   
+    [arr[i + 1], arr[h]] = [arr[h], arr[i + 1]];
+    return i + 1;
 }
 
 function kMininum(arr,l,h,k)
@@ -76,18 +76,18 @@ function kMininum(arr,l,h,k)
     
     let q = randPartition(arr,l,h);
 
-    if(k == q)
+    if(k == q - l + 1)
     {
         return arr[q];
     }
 
-    if(k < q)
+    if(k < q - l + 1)
     {
         return kMininum(arr,l, q - 1,k);
     }
     else
     {
-        return kMininum(arr,q + 1,h,k);
+        return kMininum(arr,q + 1,h,k-(q-l+1));
     }
 }
 
@@ -128,7 +128,7 @@ function pivotChoice(arr,l,h)
             break;
         case 'medianElem':
             let auxArr = arr.slice(l,h+1);
-            pivot = kMininum(auxArr,0,auxArr.length - 1,Math.floor((auxArr.length + 1)/2) - 1);
+            pivot = kMininum(auxArr,0,auxArr.length - 1,Math.floor((auxArr.length + 1)/2));
             break;
         case 'findPivot':
             pivot = findPivot(arr,l,h);
@@ -289,7 +289,7 @@ function runTests()
         pivotCase = pivots[i];
         for(let j = 0; j < degrees.length; j++)
         {
-            [labels,times] = generateData(5,degrees[j]);
+            [labels,times] = generateData(7,degrees[j]);
             htmlTemps.push(generateHTMLTemplate(`${pivots[i]}${j}`));
             jsTemps.push(generateJSTemp(`${pivots[i]}${j}`,labels,times,`${pivots[i]} ${degrees[j]}%`));
         }
