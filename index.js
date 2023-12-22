@@ -31,12 +31,12 @@ function generateUnorderedArrayByDegree(deg,size)
 
     for(let i = 0; i < swaps; i++)
     {
-        let i = getRandomInt(size);
+        let k = getRandomInt(size);
         let j = getRandomInt(size);
 
-        if(i != j)
+        if(k != j)
         {
-            [arr[i],arr[j]] = [arr[j],arr[i]];
+            [arr[k],arr[j]] = [arr[j],arr[k]];
         }
         else
         {
